@@ -93,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(20.0),
                     child: TextFormField(
                       initialValue: state.name,
+                      onChanged: (name) => context.read<SubscriptionBloc>()..add(NameChanged(name)),
                         decoration: const InputDecoration(hintText: "name"),
                         controller: textEditingControllerName),
                   ),
@@ -102,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       value: Notification.no,
                       onChanged: (Notification? value) {
                         setState(() {
+                          context.read<SubscriptionBloc>()..add(NotificationChanged(false));
                           _character = value;
                         });
                       },
@@ -111,12 +113,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       value: Notification.yes,
                       onChanged: (Notification? value) {
                         setState(() {
+                           context.read<SubscriptionBloc>()..add(NotificationChanged(true));
                           _character = value;
                         });
                       },
                       groupValue: _character),
                   TextFormField(
                     initialValue: state.days.toString(),
+                    onChanged: (days) => context.read<SubscriptionBloc>().add(DaysChanged(num.parse(days))),
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(hintText: "days"),
                     controller: textEditingControllerDays,
