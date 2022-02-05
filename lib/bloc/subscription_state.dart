@@ -19,6 +19,5 @@ num? days
 }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [name,notification,days];
  }

@@ -1,5 +1,7 @@
+import 'package:androidapp/bloc/subscription_bloc.dart';
 import 'package:androidapp/model/subscription.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,7 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Notification? _character = Notification.no;
   DateTime selectedDate = DateTime.now();
 
-
   @override
   void initState() {
     super.initState();
@@ -69,111 +70,118 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         selectedDate = picked;
       });
-        }
+  }
 
-      @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: TextFormField(
-                    decoration: const InputDecoration(hintText: "name"),
-                    controller: textEditingControllerName),
-              ),
-              const Text("Notification when the contract expires"),
-
-              RadioListTile<Notification>(
-                  title: const Text("no"),
-                  value: Notification.no,
-                  onChanged: (Notification? value) {
-                    setState(() {
-                      _character = value;
-                    });
-                  },
-                  groupValue: _character),
-              RadioListTile<Notification>(
-                  title: const Text("yes"),
-                  value: Notification.yes,
-                  onChanged: (Notification? value) {
-                    setState(() {
-                      _character = value;
-                    });
-                  },
-                  groupValue: _character),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(hintText: "days"),
-                controller: textEditingControllerDays,
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  onPressed: () => _selectDate(context), // Refer step 3
-                  child: const Text(
-                    'Select date',
-                    style:
-                    TextStyle(color: Colors.white),
+      body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
+        listener: (context, state) {
+        },
+        builder: (context, state) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: TextFormField(
+                      initialValue: state.name,
+                        decoration: const InputDecoration(hintText: "name"),
+                        controller: textEditingControllerName),
                   ),
-                ),
-              ),
-              Text(selectedDate.toLocal().toString()),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                    onPressed: () {
-                      var insurance = Subscription(
-                          name: textEditingControllerName.value.text,
-                          notification:
-                              _character == Notification.yes ? true : false,
-                          days:
-                              int.parse(textEditingControllerDays.value.text));
-                      _insuranceBox.add(insurance);
-                    },
-                    child: const Text("Add")),
-              ),
-              const Text("Data in database"),
-                   Expanded(
-                      child: WatchBoxBuilder(
-                        box: _insuranceBox,
-                        builder: (context, box) {
-                          Map<dynamic, dynamic> raw = box.toMap();
-                          List list = raw.values.toList();
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: list.length,
-                            itemBuilder: (context, index) {
-                              Subscription insurance = list[index];
-                              return Card(
-                                child: ListTile(
-                                  title: Text(insurance.name),
-                                  leading:  GestureDetector(child: Icon(Icons.delete), onTap: () => (value) {
-                                    setState(() {
-                                      print("delete");
-                                    _insuranceBox.delete(value);
-                                    });
-                                  }),
-                                ),
-                              );
-                            },
-                          );
-                        },
+                  const Text("Notification when the contract expires"),
+                  RadioListTile<Notification>(
+                      title: const Text("no"),
+                      value: Notification.no,
+                      onChanged: (Notification? value) {
+                        setState(() {
+                          _character = value;
+                        });
+                      },
+                      groupValue: _character),
+                  RadioListTile<Notification>(
+                      title: const Text("yes"),
+                      value: Notification.yes,
+                      onChanged: (Notification? value) {
+                        setState(() {
+                          _character = value;
+                        });
+                      },
+                      groupValue: _character),
+                  TextFormField(
+                    initialValue: state.days.toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: "days"),
+                    controller: textEditingControllerDays,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () => _selectDate(context), // Refer step 3
+                      child: const Text(
+                        'Select date',
+                        style: TextStyle(color: Colors.white),
                       ),
-                    )
-            ],
-          ),
-        ),
+                    ),
+                  ),
+                  Text(selectedDate.toLocal().toString()),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          var insurance = Subscription(
+                              name: textEditingControllerName.value.text,
+                              notification:
+                                  _character == Notification.yes ? true : false,
+                              days: int.parse(
+                                  textEditingControllerDays.value.text));
+                          _insuranceBox.add(insurance);
+                        },
+                        child: const Text("Add")),
+                  ),
+                  const Text("Data in database"),
+                  Expanded(
+                    child: WatchBoxBuilder(
+                      box: _insuranceBox,
+                      builder: (context, box) {
+                        Map<dynamic, dynamic> raw = box.toMap();
+                        List list = raw.values.toList();
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: list.length,
+                          itemBuilder: (context, index) {
+                            Subscription insurance = list[index];
+                            return Card(
+                              child: ListTile(
+                                title: Text(insurance.name),
+                                leading: GestureDetector(
+                                    child: Icon(Icons.delete),
+                                    onTap: () => (value) {
+                                          setState(() {
+                                            print("delete");
+                                            _insuranceBox.delete(value);
+                                          });
+                                        }),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
