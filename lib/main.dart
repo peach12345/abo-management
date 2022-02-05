@@ -22,7 +22,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Insurance end reminder'),
+      home:  BlocProvider(
+        create: (context) => SubscriptionBloc(),
+        child: MyHomePage(title: 'Insurance end reminder'),
+      ),
     );
   }
 }
@@ -79,8 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
-        listener: (context, state) {
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Center(
             child: Padding(
@@ -92,8 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: TextFormField(
-                      initialValue: state.name,
-                      onChanged: (name) => context.read<SubscriptionBloc>()..add(NameChanged(name)),
+                        initialValue: state.name,
+                        onChanged: (name) => context.read<SubscriptionBloc>()
+                          ..add(NameChanged(name)),
                         decoration: const InputDecoration(hintText: "name"),
                         controller: textEditingControllerName),
                   ),
@@ -103,7 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       value: Notification.no,
                       onChanged: (Notification? value) {
                         setState(() {
-                          context.read<SubscriptionBloc>()..add(NotificationChanged(false));
+                          context.read<SubscriptionBloc>()
+                            ..add(NotificationChanged(false));
                           _character = value;
                         });
                       },
@@ -113,14 +117,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       value: Notification.yes,
                       onChanged: (Notification? value) {
                         setState(() {
-                           context.read<SubscriptionBloc>()..add(NotificationChanged(true));
+                          context.read<SubscriptionBloc>()
+                            ..add(NotificationChanged(true));
                           _character = value;
                         });
                       },
                       groupValue: _character),
                   TextFormField(
                     initialValue: state.days.toString(),
-                    onChanged: (days) => context.read<SubscriptionBloc>().add(DaysChanged(num.parse(days))),
+                    onChanged: (days) => context
+                        .read<SubscriptionBloc>()
+                        .add(DaysChanged(num.parse(days))),
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(hintText: "days"),
                     controller: textEditingControllerDays,
