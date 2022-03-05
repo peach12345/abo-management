@@ -15,12 +15,17 @@ class NameChanged extends SubscriptionEvent{
   List<Object?> get props => [name];
 }
 
-class DaysChanged extends SubscriptionEvent{
-  const DaysChanged(this.days);
-  final num days;
+class DateChanged extends SubscriptionEvent{
+  const DateChanged(this.date);
+  final String date;
 
   @override
-  List<Object?> get props => [days];
+  List<Object?> get props => [date];
+}
+
+
+class SubscriptionSubmitted extends SubscriptionEvent{
+
 }
 
 class NotificationChanged extends SubscriptionEvent{
@@ -32,7 +37,4 @@ class NotificationChanged extends SubscriptionEvent{
 }
 
 
-class SubscriptionSubmitted extends SubscriptionEvent{
-  @override
-  List<Object?> get props => [];
-}
+

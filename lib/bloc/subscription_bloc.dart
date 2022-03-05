@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:androidapp/model/subscription.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -11,19 +12,11 @@ part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState>  {
   SubscriptionBloc() : super(const SubscriptionState()) {
-    on<SubscriptionSubmitted>(_SubscriptionSubmitted);
-    on<NameChanged>(_NameChanged);
-    on<DaysChanged>(_DaysChanged);
-    on<NotificationChanged>(_notificationChanged);
-
+    on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
+    on<NameChanged>(_onNameChanged);
+    on<DateChanged>(_onDateChangend);
   }
 
-  // ignore: non_constant_identifier_names
-  FutureOr<void> _SubscriptionSubmitted(SubscriptionSubmitted event, Emitter<SubscriptionState> emit) {
-    if(validateInputs()) {
-      
-    }
-  }
     bool validateInputs() {
 
       if(state.name.isNotEmpty){
@@ -32,17 +25,20 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState>  {
       return false;
     }
 
-  FutureOr<void> _NameChanged(NameChanged event, Emitter<SubscriptionState> emit) {
+  FutureOr<void> _onNameChanged(NameChanged event, Emitter<SubscriptionState> emit) {
     emit(state.copyWith(name: event.name));
   }
 
-  FutureOr<void> _DaysChanged(DaysChanged event, Emitter<SubscriptionState> emit) {
-        emit(state.copyWith(days: event.days));
-
+  FutureOr<void> _onSubscriptionSubmitted(SubscriptionSubmitted event, Emitter<SubscriptionState> emit) {
+    print("Hallo");
+    List<Subscription> newResult = [];
+    newResult.addAll(state.result);
+    newResult.add(Subscription(name: state.name, date: state.date));
+    emit(state.copyWith(result: newResult));
   }
 
-  FutureOr<void> _notificationChanged(NotificationChanged event, Emitter<SubscriptionState> emit) {
-            emit(state.copyWith(notification: event.notification));
-
+  FutureOr<void> _onDateChangend(DateChanged event, Emitter<SubscriptionState> emit) {
+    print("Test");
+    emit(state.copyWith(date: event.date));
   }
 }

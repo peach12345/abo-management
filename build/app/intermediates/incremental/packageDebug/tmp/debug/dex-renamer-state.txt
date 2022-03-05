@@ -1,4 +1,4 @@
-#Tue Jan 18 20:07:58 CET 2022
-base.0=/Users/danielweyck/StudioProjects/androidapp/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+#Sat Mar 05 06:23:17 PST 2022
+base.0=C\:\\Users\\Daniel\\Documents\\abo-management\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

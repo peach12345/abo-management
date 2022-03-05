@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       home:  BlocProvider(
         create: (context) => SubscriptionBloc(),
-        child: MyHomePage(title: 'Insurance end reminder'),
+        child: const MyHomePage(title: 'Insurance end reminder'),
       ),
     );
   }
@@ -41,26 +41,15 @@ class MyHomePage extends StatefulWidget {
 enum Notification { yes, no }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Box _insuranceBox;
-  late String name;
-  TextEditingController textEditingControllerName = TextEditingController();
-  TextEditingController textEditingControllerDays = TextEditingController();
-  Notification? _character = Notification.no;
+
   DateTime selectedDate = DateTime.now();
+  List<Subscription> result = [];
 
   @override
   void initState() {
     super.initState();
-    Hive.registerAdapter(SubscriptionAdapter());
-    _openBox();
   }
 
-  Future _openBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    _insuranceBox = await Hive.openBox('subscriptionBox');
-    return;
-  }
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -69,10 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     );
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        context.read<SubscriptionBloc>().add(DateChanged(picked.toString()));
       });
+    }
   }
 
   @override
@@ -83,6 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
         listener: (context, state) {},
+        buildWhen: (previous,current) {
+          return previous.result != current.result;
+    },
+
         builder: (context, state) {
           return Center(
             child: Padding(
@@ -97,97 +92,55 @@ class _MyHomePageState extends State<MyHomePage> {
                         initialValue: state.name,
                         onChanged: (name) => context.read<SubscriptionBloc>()
                           ..add(NameChanged(name)),
-                        decoration: const InputDecoration(hintText: "name"),
-                        controller: textEditingControllerName),
-                  ),
-                  const Text("Notification when the contract expires"),
-                  RadioListTile<Notification>(
-                      title: const Text("no"),
-                      value: Notification.no,
-                      onChanged: (Notification? value) {
-                        setState(() {
-                          context.read<SubscriptionBloc>()
-                            ..add(NotificationChanged(false));
-                          _character = value;
-                        });
-                      },
-                      groupValue: _character),
-                  RadioListTile<Notification>(
-                      title: const Text("yes"),
-                      value: Notification.yes,
-                      onChanged: (Notification? value) {
-                        setState(() {
-                          context.read<SubscriptionBloc>()
-                            ..add(NotificationChanged(true));
-                          _character = value;
-                        });
-                      },
-                      groupValue: _character),
-                  TextFormField(
-                    initialValue: state.days.toString(),
-                    onChanged: (days) => context
-                        .read<SubscriptionBloc>()
-                        .add(DaysChanged(num.parse(days))),
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: "days"),
-                    controller: textEditingControllerDays,
+                        decoration: const InputDecoration(hintText: "Abo name",labelText: "Abo name"
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       onPressed: () => _selectDate(context), // Refer step 3
-                      child: const Text(
-                        'Select date',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child: const Icon(Icons.calendar_today_outlined),
                     ),
                   ),
-                  Text(selectedDate.toLocal().toString()),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text("Date: " + selectedDate.toLocal().toString()),
+                  ),
                   const Divider(),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          var insurance = Subscription(
-                              name: textEditingControllerName.value.text,
-                              notification:
-                                  _character == Notification.yes ? true : false,
-                              days: int.parse(
-                                  textEditingControllerDays.value.text));
-                          _insuranceBox.add(insurance);
-                        },
-                        child: const Text("Add")),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: FloatingActionButton(
+                          onPressed:  () => {context.read<SubscriptionBloc>()
+                            ..add(SubscriptionSubmitted())},
+                          child: const Icon(Icons.add)),
+                    ),
                   ),
                   const Text("Data in database"),
-                  Expanded(
-                    child: WatchBoxBuilder(
-                      box: _insuranceBox,
-                      builder: (context, box) {
-                        Map<dynamic, dynamic> raw = box.toMap();
-                        List list = raw.values.toList();
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: list.length,
-                          itemBuilder: (context, index) {
-                            Subscription insurance = list[index];
-                            return Card(
-                              child: ListTile(
-                                title: Text(insurance.name),
-                                leading: GestureDetector(
-                                    child: Icon(Icons.delete),
-                                    onTap: () => (value) {
-                                          setState(() {
-                                            print("delete");
-                                            _insuranceBox.delete(value);
-                                          });
-                                        }),
-                              ),
-                            );
-                          },
-                        );
+
+                  BlocBuilder<SubscriptionBloc, SubscriptionState>(
+                      buildWhen: (previousState, state) {
+                       return previousState.result.length != state.result.length;
+                        // return true/false to determine whether or not
+                        // to rebuild the widget with state
                       },
-                    ),
+                      builder: (context, state) {
+                      return  Expanded(
+                          flex: 1,
+                          child: ListView.builder(
+                            itemCount: state.result.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(state.result[index].name + " " +  state.result[index].date),
+                              );
+                            },
+                          ),
+                        );
+                        // return widget here based on BlocA's state
+                      }
                   )
+
                 ],
               ),
             ),
