@@ -7,7 +7,7 @@ class DatabaseService  {
     box.add(insurance);
   }
 
-  Future<Subscription> getObject()  async {
+  Future getObject()  async {
     var box = await Hive.openBox('insurance');
     return box.getAt(0);
   }
