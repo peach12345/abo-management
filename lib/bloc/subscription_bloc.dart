@@ -30,7 +30,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState>  {
   }
 
   FutureOr<void> _onSubscriptionSubmitted(SubscriptionSubmitted event, Emitter<SubscriptionState> emit) {
-    print("Hallo");
     List<Subscription> newResult = [];
     newResult.addAll(state.result);
     newResult.add(Subscription(name: state.name, date: state.date));

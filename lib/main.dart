@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  BlocProvider(
+      home: BlocProvider(
         create: (context) => SubscriptionBloc(),
         child: const MyHomePage(title: 'Insurance end reminder'),
       ),
@@ -41,7 +41,6 @@ class MyHomePage extends StatefulWidget {
 enum Notification { yes, no }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   DateTime selectedDate = DateTime.now();
   List<Subscription> result = [];
 
@@ -49,7 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
   }
-
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -74,10 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
         listener: (context, state) {},
-        buildWhen: (previous,current) {
+        buildWhen: (previous, current) {
           return previous.result != current.result;
-    },
-
+        },
         builder: (context, state) {
           return Center(
             child: Padding(
@@ -92,8 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         initialValue: state.name,
                         onChanged: (name) => context.read<SubscriptionBloc>()
                           ..add(NameChanged(name)),
-                        decoration: const InputDecoration(hintText: "Abo name",labelText: "Abo name"
-                        )),
+                        decoration: const InputDecoration(
+                            hintText: "Abo name", labelText: "Abo name")),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -112,34 +109,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: FloatingActionButton(
-                          onPressed:  () => {context.read<SubscriptionBloc>()
-                            ..add(SubscriptionSubmitted())},
+                          onPressed: () => {
+                                context.read<SubscriptionBloc>()
+                                  ..add(SubscriptionSubmitted())
+                              },
                           child: const Icon(Icons.add)),
                     ),
                   ),
-                  const Text("Data in database"),
-
                   BlocBuilder<SubscriptionBloc, SubscriptionState>(
                       buildWhen: (previousState, state) {
-                       return previousState.result.length != state.result.length;
-                        // return true/false to determine whether or not
-                        // to rebuild the widget with state
-                      },
-                      builder: (context, state) {
-                      return  Expanded(
-                          flex: 1,
-                          child: ListView.builder(
-                            itemCount: state.result.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(state.result[index].name + " " +  state.result[index].date),
-                              );
-                            },
-                          ),
-                        );
-                        // return widget here based on BlocA's state
-                      }
-                  )
+                    return previousState.result.length != state.result.length;
+                    // return true/false to determine whether or not
+                    // to rebuild the widget with state
+                  }, builder: (context, state) {
+                    return Expanded(
+                      flex: 1,
+                      child: Table()
+                    );
+                    // return widget here based on BlocA's state
+                  }),
 
                 ],
               ),
@@ -148,5 +136,46 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
+  }
+}
+
+class Table extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SubscriptionBloc, SubscriptionState>(
+        buildWhen: (previousState, state) {
+      return previousState.result.length != state.result.length;
+      // return true/false to determine whether or not
+      // to rebuild the widget with state
+    }, builder: (context, state) {
+      return DataTable(
+        decoration: const BoxDecoration(border: Border(
+          bottom: BorderSide( //                   <--- left side
+            color: Colors.black,
+            width: 0.5,
+          ),
+          top: BorderSide( //                    <--- top side
+            color: Colors.black,
+            width: 0.5,
+          ),
+        )),
+        columns: const [
+          DataColumn(label: Text('Name')),
+          DataColumn(label: Text('Date')),
+        ],
+        rows: state
+            .result // Loops through dataColumnText, each iteration assigning the value to element
+            .map(
+              ((element) => DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text(element.name)),
+                      DataCell(Text(element.date))
+                      //Extracting from Map element the value
+                    ],
+                  )),
+            )
+            .toList(),
+      );
+    });
   }
 }
