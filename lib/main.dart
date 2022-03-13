@@ -1,6 +1,7 @@
 import 'package:androidapp/bloc/subscription_bloc.dart';
 import 'package:androidapp/model/subscription.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -91,6 +92,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           ..add(NameChanged(name)),
                         decoration: const InputDecoration(
                             hintText: "Abo name", labelText: "Abo name")),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        initialValue: state.cancellationPeriod.toString(),
+                        onChanged: (month) => context.read<SubscriptionBloc>()
+                          ..add(CancellationPeriodChanged(month.isEmpty ? 0 : num.parse(month))),
+                        decoration: const InputDecoration(
+                            hintText: "Cancellation period", labelText: "Cancellation period")),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),

@@ -15,6 +15,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
     on<NameChanged>(_onNameChanged);
     on<DateChanged>(_onDateChanged);
+    on<CancellationPeriodChanged>(_onCancellationPeriodChanged);
   }
 
   bool validateInputs() {
@@ -46,7 +47,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     newResult.addAll(state.result);
     newResult.add(Subscription(
         name: state.name,
-        date: outputFormat.format(DateTime.parse(state.date))));
+        date: outputFormat.format(DateTime.parse(state.date)),
+        cancellationPeriod: state.cancellationPeriod));
     emit(state.copyWith(result: newResult));
+  }
+
+  FutureOr<void> _onCancellationPeriodChanged(
+      CancellationPeriodChanged event, Emitter<SubscriptionState> emit) {
+    emit(state.copyWith(cancellationPeriod: event.cancellationPeriod));
   }
 }

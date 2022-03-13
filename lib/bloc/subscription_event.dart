@@ -23,6 +23,14 @@ class DateChanged extends SubscriptionEvent{
   List<Object?> get props => [date];
 }
 
+class CancellationPeriodChanged extends SubscriptionEvent{
+  const CancellationPeriodChanged(this.cancellationPeriod);
+  final num cancellationPeriod;
+
+  @override
+  List<Object?> get props => [cancellationPeriod];
+}
+
 
 class SubscriptionSubmitted extends SubscriptionEvent{
 
