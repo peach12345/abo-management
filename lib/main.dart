@@ -148,33 +148,35 @@ class Table extends StatelessWidget {
       // return true/false to determine whether or not
       // to rebuild the widget with state
     }, builder: (context, state) {
-      return DataTable(
-        decoration: const BoxDecoration(border: Border(
-          bottom: BorderSide( //                   <--- left side
-            color: Colors.black,
-            width: 0.5,
-          ),
-          top: BorderSide( //                    <--- top side
-            color: Colors.black,
-            width: 0.5,
-          ),
-        )),
-        columns: const [
-          DataColumn(label: Text('Name')),
-          DataColumn(label: Text('Date')),
-        ],
-        rows: state
-            .result // Loops through dataColumnText, each iteration assigning the value to element
-            .map(
-              ((element) => DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text(element.name)),
-                      DataCell(Text(element.date))
-                      //Extracting from Map element the value
-                    ],
-                  )),
-            )
-            .toList(),
+      return SingleChildScrollView(
+        child: DataTable(
+          decoration: const BoxDecoration(border: Border(
+            bottom: BorderSide( //                   <--- left side
+              color: Colors.black,
+              width: 0.5,
+            ),
+            top: BorderSide( //                    <--- top side
+              color: Colors.black,
+              width: 0.5,
+            ),
+          )),
+          columns: const [
+            DataColumn(label: Text('Name')),
+            DataColumn(label: Text('Date')),
+          ],
+          rows: state
+              .result // Loops through dataColumnText, each iteration assigning the value to element
+              .map(
+                ((element) => DataRow(
+                      cells: <DataCell>[
+                        DataCell(Text(element.name)),
+                        DataCell(Text(element.date))
+                        //Extracting from Map element the value
+                      ],
+                    )),
+              )
+              .toList(),
+        ),
       );
     });
   }
