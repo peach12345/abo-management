@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     // return true/false to determine whether or not
                     // to rebuild the widget with state
                   }, builder: (context, state) {
-                    return Expanded(
+                    return const Expanded(
                       flex: 1,
                       child: Table()
                     );
@@ -152,6 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Table extends StatelessWidget {
+  const Table({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SubscriptionBloc, SubscriptionState>(
@@ -175,6 +177,7 @@ class Table extends StatelessWidget {
           columns: const [
             DataColumn(label: Text('Name')),
             DataColumn(label: Text('Date')),
+            DataColumn(label: Text('Cancellation Period'))
           ],
           rows: state
               .result // Loops through dataColumnText, each iteration assigning the value to element
@@ -182,7 +185,8 @@ class Table extends StatelessWidget {
                 ((element) => DataRow(
                       cells: <DataCell>[
                         DataCell(Text(element.name)),
-                        DataCell(Text(element.date))
+                        DataCell(Text(element.date)),
+                        DataCell(Text(element.cancellationPeriod.toString()))
                         //Extracting from Map element the value
                       ],
                     )),
