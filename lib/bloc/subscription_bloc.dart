@@ -52,13 +52,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         cancellationPeriod: state.cancellationPeriod);
     List<Subscription> newResult = [];
     newResult.addAll(state.result);
-    newResult.add(sub);
-    emit(state.copyWith(result: newResult));
-
     if (box.get(sub.name) != null) {
       box.delete(sub.name);
+      newResult.remove(newResult.firstWhere((e)=> e.name == sub.name));
     }
+    newResult.add(sub);
     box.put(sub.name, sub);
+    emit(state.copyWith(result: newResult));
   }
 
   FutureOr<void> _onCancellationPeriodChanged(
