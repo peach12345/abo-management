@@ -8,11 +8,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
-  runApp(const MyApp());
+  await Hive.initFlutter();
+  Hive.registerAdapter<Subscription>(SubscriptionAdapter());
+  Box<Subscription> box  = await Hive.openBox("subscription");
+  runApp(MyApp(box: box,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key,required this.box}) : super(key: key);
+
+  final Box<Subscription> box;
 
   // This widget is the root of your application.
   @override
@@ -24,7 +29,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
-        create: (context) => SubscriptionBloc(),
+        create: (context) => SubscriptionBloc(box),
         child: const MyHomePage(title: 'Insurance end reminder'),
       ),
     );

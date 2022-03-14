@@ -1,4 +1,0 @@
-#Sat Mar 05 06:23:17 PST 2022
-base.0=C\:\\Users\\Daniel\\Documents\\abo-management\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-renamed.0=classes.dex
-path.0=classes.dex

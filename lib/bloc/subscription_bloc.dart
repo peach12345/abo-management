@@ -2,21 +2,24 @@ import 'dart:async';
 
 import 'package:androidapp/model/subscription.dart';
 import 'package:bloc/bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 part 'subscription_event.dart';
-
 part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
-  SubscriptionBloc() : super(const SubscriptionState()) {
+  SubscriptionBloc(this.box) : super(const SubscriptionState()) {
     on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
     on<NameChanged>(_onNameChanged);
     on<DateChanged>(_onDateChanged);
     on<CancellationPeriodChanged>(_onCancellationPeriodChanged);
+    init();
   }
+
+  final Box<Subscription> box;
 
   bool validateInputs() {
     if (state.name.isNotEmpty) {
@@ -43,17 +46,36 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       var outputDate = outputFormat.format(DateTime.now());
       emit(state.copyWith(date: outputDate));
     }
-    List<Subscription> newResult = [];
-    newResult.addAll(state.result);
-    newResult.add(Subscription(
+    final sub = Subscription(
         name: state.name,
         date: outputFormat.format(DateTime.parse(state.date)),
-        cancellationPeriod: state.cancellationPeriod));
+        cancellationPeriod: state.cancellationPeriod);
+    List<Subscription> newResult = [];
+    newResult.addAll(state.result);
+    newResult.add(sub);
     emit(state.copyWith(result: newResult));
+
+    if (box.get(sub.name) != null) {
+      box.delete(sub.name);
+    }
+    box.put(sub.name, sub);
   }
 
   FutureOr<void> _onCancellationPeriodChanged(
       CancellationPeriodChanged event, Emitter<SubscriptionState> emit) {
     emit(state.copyWith(cancellationPeriod: event.cancellationPeriod));
+  }
+
+  void init() {
+    List<Subscription> newResult = [];
+    newResult = box.values
+        .map(
+          (e) => Subscription(
+              name: e.name,
+              date: e.date,
+              cancellationPeriod: e.cancellationPeriod),
+        )
+        .toList();
+    emit(state.copyWith(result: newResult));
   }
 }
