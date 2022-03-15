@@ -10,12 +10,14 @@ import 'package:path_provider/path_provider.dart';
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<Subscription>(SubscriptionAdapter());
-  Box<Subscription> box  = await Hive.openBox("subscription");
-  runApp(MyApp(box: box,));
+  Box<Subscription> box = await Hive.openBox("subscription");
+  runApp(MyApp(
+    box: box,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key,required this.box}) : super(key: key);
+  const MyApp({Key? key, required this.box}) : super(key: key);
 
   final Box<Subscription> box;
 
@@ -24,36 +26,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //   var insurance = databaseService.getObject();
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
       title: 'My App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
         create: (context) => SubscriptionBloc(box),
-        child: const MyHomePage(title: 'Insurance end reminder'),
+        child: const SubscriptionView(),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
 enum Notification { yes, no }
 
-class _MyHomePageState extends State<MyHomePage> {
+class AddSubscriptionView extends StatelessWidget {
   DateTime selectedDate = DateTime.now();
-  List<Subscription> result = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -63,18 +54,15 @@ class _MyHomePageState extends State<MyHomePage> {
       lastDate: DateTime(2025),
     );
     if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        context.read<SubscriptionBloc>().add(DateChanged(picked.toString()));
-      });
+      selectedDate = picked;
+      context.read<SubscriptionBloc>().add(DateChanged(picked.toString()));
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Add Subscription"),
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
         listener: (context, state) {},
@@ -102,12 +90,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(20.0),
                     child: TextFormField(
                         keyboardType: TextInputType.number,
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         initialValue: state.cancellationPeriod.toString(),
                         onChanged: (month) => context.read<SubscriptionBloc>()
-                          ..add(CancellationPeriodChanged(month.isEmpty ? 0 : num.parse(month))),
+                          ..add(CancellationPeriodChanged(
+                              month.isEmpty ? 0 : num.parse(month))),
                         decoration: const InputDecoration(
-                            hintText: "Cancellation period", labelText: "Cancellation period")),
+                            hintText: "Cancellation period",
+                            labelText: "Cancellation period")),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -133,19 +125,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: const Icon(Icons.add)),
                     ),
                   ),
-                  BlocBuilder<SubscriptionBloc, SubscriptionState>(
-                      buildWhen: (previousState, state) {
-                    return previousState.result.length != state.result.length;
-                    // return true/false to determine whether or not
-                    // to rebuild the widget with state
-                  }, builder: (context, state) {
-                    return const Expanded(
-                      flex: 1,
-                      child: Table()
-                    );
-                    // return widget here based on BlocA's state
-                  }),
-
                 ],
               ),
             ),
@@ -169,12 +148,15 @@ class Table extends StatelessWidget {
     }, builder: (context, state) {
       return SingleChildScrollView(
         child: DataTable(
-          decoration: const BoxDecoration(border: Border(
-            bottom: BorderSide( //                   <--- left side
+          decoration: const BoxDecoration(
+              border: Border(
+            bottom: BorderSide(
+              //                   <--- left side
               color: Colors.black,
               width: 0.5,
             ),
-            top: BorderSide( //                    <--- top side
+            top: BorderSide(
+              //                    <--- top side
               color: Colors.black,
               width: 0.5,
             ),
@@ -200,5 +182,49 @@ class Table extends StatelessWidget {
         ),
       );
     });
+  }
+}
+
+class SubscriptionView extends StatelessWidget {
+  const SubscriptionView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Subscriptions"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _pushSaved(context);
+              },
+              icon: const Icon(Icons.add))
+        ],
+      ),
+      body:  Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const <Widget>[
+                  Expanded(flex: 1, child: Table()),
+                    // return widget here based on BlocA's state
+
+                ],
+              ),
+            ),
+
+      ),
+    );
+  }
+
+  void _pushSaved(BuildContext mainContext) {
+    Navigator.of(mainContext).push(MaterialPageRoute<void>(builder: (context) {
+     return BlocProvider(
+        create: (context) => mainContext.read<SubscriptionBloc>(),
+        child:  AddSubscriptionView(),
+      );
+    }));
   }
 }
