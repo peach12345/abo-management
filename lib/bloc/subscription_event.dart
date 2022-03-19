@@ -33,6 +33,10 @@ class CancellationPeriodChanged extends SubscriptionEvent{
 
 
 class SubscriptionSubmitted extends SubscriptionEvent{
+}
+
+
+class SubscriptionInitial extends SubscriptionEvent{
 
 }
 

@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
     //   var insurance = databaseService.getObject();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'My App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -43,8 +42,9 @@ class MyApp extends StatelessWidget {
 enum Notification { yes, no }
 
 class AddSubscriptionView extends StatelessWidget {
-  DateTime selectedDate = DateTime.now();
+   DateTime selectedDate = DateTime.now();
 
+  AddSubscriptionView({Key? key}) : super(key: key);
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -58,6 +58,7 @@ class AddSubscriptionView extends StatelessWidget {
       context.read<SubscriptionBloc>().add(DateChanged(picked.toString()));
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,9 +66,10 @@ class AddSubscriptionView extends StatelessWidget {
         title: const Text("Add Subscription"),
       ),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
-        listener: (context, state) {},
-        buildWhen: (previous, current) {
-          return previous.result != current.result;
+        listener: (context, state) {
+       //   if (state.status == SubscriptionStatus.success) {
+        //    Navigator.of(context).pop();
+       //   }
         },
         builder: (context, state) {
           return Center(
@@ -82,7 +84,7 @@ class AddSubscriptionView extends StatelessWidget {
                     child: TextFormField(
                         initialValue: state.name,
                         onChanged: (name) => context.read<SubscriptionBloc>()
-                          ..add(NameChanged(name)),
+                          .add(NameChanged(name)),
                         decoration: const InputDecoration(
                             hintText: "Abo name", labelText: "Abo name")),
                   ),
@@ -95,7 +97,7 @@ class AddSubscriptionView extends StatelessWidget {
                         ],
                         initialValue: state.cancellationPeriod.toString(),
                         onChanged: (month) => context.read<SubscriptionBloc>()
-                          ..add(CancellationPeriodChanged(
+                          .add(CancellationPeriodChanged(
                               month.isEmpty ? 0 : num.parse(month))),
                         decoration: const InputDecoration(
                             hintText: "Cancellation period",
@@ -120,7 +122,7 @@ class AddSubscriptionView extends StatelessWidget {
                       child: FloatingActionButton(
                           onPressed: () => {
                                 context.read<SubscriptionBloc>()
-                                  ..add(SubscriptionSubmitted())
+                                  .add(SubscriptionSubmitted())
                               },
                           child: const Icon(Icons.add)),
                     ),
@@ -201,29 +203,28 @@ class SubscriptionView extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body:  Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const <Widget>[
-                  Expanded(flex: 1, child: Table()),
-                    // return widget here based on BlocA's state
-
-                ],
-              ),
-            ),
-
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const <Widget>[
+              Expanded(flex: 1, child: Table()),
+              // return widget here based on BlocA's state
+            ],
+          ),
+        ),
       ),
     );
   }
 
   void _pushSaved(BuildContext mainContext) {
+    mainContext.read<SubscriptionBloc>().add(SubscriptionInitial());
     Navigator.of(mainContext).push(MaterialPageRoute<void>(builder: (context) {
-     return BlocProvider(
+      return BlocProvider(
         create: (context) => mainContext.read<SubscriptionBloc>(),
-        child:  AddSubscriptionView(),
+        child: AddSubscriptionView(),
       );
     }));
   }

@@ -8,25 +8,20 @@ import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 part 'subscription_event.dart';
+
 part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
-  SubscriptionBloc(this.box) : super(const SubscriptionState()) {
+  SubscriptionBloc(this.box) : super( const SubscriptionState()) {
     on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
     on<NameChanged>(_onNameChanged);
     on<DateChanged>(_onDateChanged);
     on<CancellationPeriodChanged>(_onCancellationPeriodChanged);
+    on<SubscriptionInitial>(_onSubscriptionInitial);
     init();
   }
 
   final Box<Subscription> box;
-
-  bool validateInputs() {
-    if (state.name.isNotEmpty) {
-      return true;
-    }
-    return false;
-  }
 
   FutureOr<void> _onNameChanged(
       NameChanged event, Emitter<SubscriptionState> emit) {
@@ -54,11 +49,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     newResult.addAll(state.result);
     if (box.get(sub.name) != null) {
       box.delete(sub.name);
-      newResult.remove(newResult.firstWhere((e)=> e.name == sub.name));
+      newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
     }
+    emit(state.copyWith(status: SubscriptionStatus.loading));
     newResult.add(sub);
     box.put(sub.name, sub);
-    emit(state.copyWith(result: newResult));
+    emit(state.copyWith(result: newResult, status: SubscriptionStatus.success));
   }
 
   FutureOr<void> _onCancellationPeriodChanged(
@@ -77,5 +73,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         )
         .toList();
     emit(state.copyWith(result: newResult));
+  }
+
+  FutureOr<void> _onSubscriptionInitial(
+      SubscriptionInitial event, Emitter<SubscriptionState> emit) {
+    emit(state.copyWith(status: SubscriptionStatus.initial));
   }
 }
