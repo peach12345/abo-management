@@ -66,7 +66,7 @@ class SubscriptionView extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                _pushSaved(context);
+                _openAddSubscriptionView(context);
               },
               icon: const Icon(Icons.add))
         ],
@@ -87,11 +87,11 @@ class SubscriptionView extends StatelessWidget {
     );
   }
 
-  void _pushSaved(BuildContext mainContext) {
-    mainContext.read<SubscriptionBloc>().add(SubscriptionInitial());
-    Navigator.of(mainContext).push(MaterialPageRoute(builder: (context) {
-      return BlocProvider(
-        create: (context) => mainContext.read<SubscriptionBloc>(),
+  void _openAddSubscriptionView(BuildContext context) {
+    context.read<SubscriptionBloc>().add(SubscriptionInitial());
+    Navigator.of(context).push(MaterialPageRoute(builder: (newcontext) {
+      return BlocProvider.value(
+        value:  BlocProvider.of<SubscriptionBloc>(context),
         child: AddSubscriptionView(),
       );
     }));
