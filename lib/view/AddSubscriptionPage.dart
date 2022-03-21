@@ -26,6 +26,7 @@ class AddSubscriptionView extends StatelessWidget {
         title: const Text("Add Subscription"),
       ),
       body: BlocListener<SubscriptionBloc, SubscriptionState>(
+        listenWhen: (previous,current) {return previous.status != current.status;},
         listener: (context, state) {
           if (state.status == SubscriptionStatus.success) {
             Navigator.of(context).pop();
