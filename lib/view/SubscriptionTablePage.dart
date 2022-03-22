@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/subscription_bloc.dart';
@@ -48,7 +46,36 @@ class Table extends StatelessWidget {
                           DataCell(Text(element.name)),
                           DataCell(Text(element.date)),
                           DataCell(Text(element.cancellationPeriod.toString())),
-                          DataCell(const Icon(Icons.delete),onTap: () => {context.read<SubscriptionBloc>().add(DeleteSubscription(element.name))})
+                          DataCell(const Icon(Icons.delete),
+                              onTap: () => {
+                                    showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext newContext) =>
+                                          AlertDialog(
+                                        title: const Text('Delete entry'),
+                                        content: const Text(
+                                            'Do you really want to delete this entry?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => {
+                                              context
+                                                  .read<SubscriptionBloc>()
+                                                  .add(DeleteSubscription(
+                                                      element.name)),
+                                              Navigator.pop(newContext, 'Yes')
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () => {
+                                              Navigator.pop(newContext, 'No')
+                                            },
+                                            child: const Text('No'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  })
                           //Extracting from Map element the value
                         ],
                       )),
@@ -77,7 +104,7 @@ class SubscriptionView extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body:  Container(child: const Table()),
+      body: Container(child: const Table()),
     );
   }
 
