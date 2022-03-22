@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/subscription_bloc.dart';
@@ -12,43 +13,48 @@ class Table extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SubscriptionBloc, SubscriptionState>(
         buildWhen: (previousState, state) {
-          return previousState.result.length != state.result.length;
-          // return true/false to determine whether or not
-          // to rebuild the widget with state
-        }, builder: (context, state) {
+      return previousState.result.length != state.result.length;
+      // return true/false to determine whether or not
+      // to rebuild the widget with state
+    }, builder: (context, state) {
       return SingleChildScrollView(
-        child: DataTable(
-          decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  //                   <--- left side
-                  color: Colors.black,
-                  width: 0.5,
-                ),
-                top: BorderSide(
-                  //                    <--- top side
-                  color: Colors.black,
-                  width: 0.5,
-                ),
-              )),
-          columns: const [
-            DataColumn(label: Text('Name')),
-            DataColumn(label: Text('Date')),
-            DataColumn(label: Text('Cancellation Period'))
-          ],
-          rows: state
-              .result // Loops through dataColumnText, each iteration assigning the value to element
-              .map(
-            ((element) => DataRow(
-              cells: <DataCell>[
-                DataCell(Text(element.name)),
-                DataCell(Text(element.date)),
-                DataCell(Text(element.cancellationPeriod.toString()))
-                //Extracting from Map element the value
-              ],
+        scrollDirection: Axis.vertical,
+        child: FittedBox(
+          child: DataTable(
+            decoration: const BoxDecoration(
+                border: Border(
+              bottom: BorderSide(
+                //                   <--- left side
+                color: Colors.black,
+                width: 0.5,
+              ),
+              top: BorderSide(
+                //                    <--- top side
+                color: Colors.black,
+                width: 0.5,
+              ),
             )),
-          )
-              .toList(),
+            columns: const [
+              DataColumn(label: Text('Name')),
+              DataColumn(label: Text('Date')),
+              DataColumn(label: Text('Cancellation Period')),
+              DataColumn(label: Text('Delete'))
+            ],
+            rows: state
+                .result // Loops through dataColumnText, each iteration assigning the value to element
+                .map(
+                  ((element) => DataRow(
+                        cells: <DataCell>[
+                          DataCell(Text(element.name)),
+                          DataCell(Text(element.date)),
+                          DataCell(Text(element.cancellationPeriod.toString())),
+                          DataCell(const Icon(Icons.delete),onTap: () => {context.read<SubscriptionBloc>().add(DeleteSubscription(element.name))})
+                          //Extracting from Map element the value
+                        ],
+                      )),
+                )
+                .toList(),
+          ),
         ),
       );
     });
@@ -71,19 +77,7 @@ class SubscriptionView extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const <Widget>[
-              Expanded(flex: 1, child: Table()),
-              // return widget here based on BlocA's state
-            ],
-          ),
-        ),
-      ),
+      body:  Container(child: const Table()),
     );
   }
 
@@ -91,7 +85,7 @@ class SubscriptionView extends StatelessWidget {
     context.read<SubscriptionBloc>().add(SubscriptionInitial());
     Navigator.of(context).push(MaterialPageRoute(builder: (newcontext) {
       return BlocProvider.value(
-        value:  BlocProvider.of<SubscriptionBloc>(context),
+        value: BlocProvider.of<SubscriptionBloc>(context),
         child: AddSubscriptionView(),
       );
     }));

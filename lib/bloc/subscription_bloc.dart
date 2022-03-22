@@ -18,6 +18,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<DateChanged>(_onDateChanged);
     on<CancellationPeriodChanged>(_onCancellationPeriodChanged);
     on<SubscriptionInitial>(_onSubscriptionInitial);
+    on<DeleteSubscription>(_onDeleteSubscription);
     init();
   }
 
@@ -86,5 +87,15 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   Future<void> _onSubscriptionInitial(
       SubscriptionInitial event, Emitter<SubscriptionState> emit) async {
     emit(state.copyWith(status: SubscriptionStatus.initial));
+  }
+
+  FutureOr<void> _onDeleteSubscription(DeleteSubscription event, Emitter<SubscriptionState> emit) {
+    List<Subscription> newResult = [];
+    newResult.addAll(state.result);
+    if (box.get(event.name) != null) {
+      box.delete(event.name);
+      newResult.remove(newResult.firstWhere((e) => e.name == event.name));
+    }
+    emit(state.copyWith(result: newResult));
   }
 }

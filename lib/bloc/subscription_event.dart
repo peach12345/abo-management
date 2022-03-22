@@ -48,5 +48,13 @@ class NotificationChanged extends SubscriptionEvent{
   List<Object?> get props => [notification];
 }
 
+class DeleteSubscription extends SubscriptionEvent{
+  const DeleteSubscription(this.name);
+  final String name;
+
+  @override
+  List<Object?> get props => [name];
+}
+
 
 

@@ -48,63 +48,65 @@ class AddSubscriptionView extends StatelessWidget {
         },
         child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
           builder: (context, state) {
-            return Center(
+            return Container(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: TextFormField(
-                          initialValue: state.name,
-                          onChanged: (name) => {
-                                context
-                                    .read<SubscriptionBloc>()
-                                    .add(NameChanged(name))
-                              },
-                          decoration: const InputDecoration(
-                              hintText: "Abo name", labelText: "Abo name")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          initialValue: state.cancellationPeriod.toString(),
-                          onChanged: (month) => context
-                              .read<SubscriptionBloc>()
-                              .add(CancellationPeriodChanged(
-                                  month.isEmpty ? 0 : num.parse(month))),
-                          decoration: const InputDecoration(
-                              hintText: "Cancellation period",
-                              labelText: "Cancellation period")),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: ElevatedButton(
-                        onPressed: () => _selectDate(context), // Refer step 3
-                        child: const Icon(Icons.calendar_today_outlined),
-                      ),
-                    ),
-                    const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: FloatingActionButton(
-                            onPressed: () => {
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: TextFormField(
+                            initialValue: state.name,
+                            onChanged: (name) => {
                                   context
                                       .read<SubscriptionBloc>()
-                                      .add(SubscriptionSubmitted())
+                                      .add(NameChanged(name))
                                 },
-                            child: const Icon(Icons.add)),
+                            decoration: const InputDecoration(
+                                hintText: "Abo name", labelText: "Abo name")),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            initialValue: state.cancellationPeriod.toString(),
+                            onChanged: (month) => context
+                                .read<SubscriptionBloc>()
+                                .add(CancellationPeriodChanged(
+                                    month.isEmpty ? 0 : num.parse(month))),
+                            decoration: const InputDecoration(
+                                hintText: "Cancellation period",
+                                labelText: "Cancellation period")),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: ElevatedButton(
+                          onPressed: () => _selectDate(context), // Refer step 3
+                          child: const Icon(Icons.calendar_today_outlined),
+                        ),
+                      ),
+                      const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: FloatingActionButton(
+                              onPressed: () => {
+                                    context
+                                        .read<SubscriptionBloc>()
+                                        .add(SubscriptionSubmitted())
+                                  },
+                              child: const Icon(Icons.add)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
