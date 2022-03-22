@@ -19,6 +19,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<CancellationPeriodChanged>(_onCancellationPeriodChanged);
     on<SubscriptionInitial>(_onSubscriptionInitial);
     on<DeleteSubscription>(_onDeleteSubscription);
+    on<CostMonthlyChanged>(_onCostMonthlyChanged);
     init();
   }
 
@@ -47,6 +48,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       }
       final sub = Subscription(
           name: state.name,
+          costs: state.costs,
           date: outputFormat.format(DateTime.parse(state.date)),
           cancellationPeriod: state.cancellationPeriod);
       List<Subscription> newResult = [];
@@ -76,6 +78,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     newResult = box.values
         .map(
           (e) => Subscription(
+            costs: e.costs,
               name: e.name,
               date: e.date,
               cancellationPeriod: e.cancellationPeriod),
@@ -97,5 +100,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       newResult.remove(newResult.firstWhere((e) => e.name == event.name));
     }
     emit(state.copyWith(result: newResult));
+  }
+
+  FutureOr<void> _onCostMonthlyChanged(CostMonthlyChanged event, Emitter<SubscriptionState> emit
+      ) {
+    emit(state.copyWith(costs: event.costs));
   }
 }

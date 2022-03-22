@@ -33,9 +33,10 @@ class Table extends StatelessWidget {
               ),
             )),
             columns: const [
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Date')),
-              DataColumn(label: Text('Cancellation Period')),
+              DataColumn(label: Text('Subscription Name')),
+              DataColumn(label: Text('Start Date')),
+              DataColumn(label: Text('Cancellation Period in Month')),
+              DataColumn(label: Text('Monthly Costs')),
               DataColumn(label: Text('Delete'))
             ],
             rows: state
@@ -46,6 +47,7 @@ class Table extends StatelessWidget {
                           DataCell(Text(element.name)),
                           DataCell(Text(element.date)),
                           DataCell(Text(element.cancellationPeriod.toString())),
+                          DataCell(Text(element.costs.toString() + " €")),
                           DataCell(const Icon(Icons.delete),
                               onTap: () => {
                                     showDialog<String>(
@@ -104,7 +106,7 @@ class SubscriptionView extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: Container(child: const Table()),
+      body: const Table(),
     );
   }
 

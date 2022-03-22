@@ -13,5 +13,11 @@ class Subscription extends HiveObject {
   @HiveField(2)
   late num cancellationPeriod;
 
-  Subscription({required this.name, required this.date,required this.cancellationPeriod});
+  @HiveField(3)
+  late num costs;
+
+
+
+  Subscription({required this.name, required this.date,required this.cancellationPeriod,required this.costs
+  });
 }

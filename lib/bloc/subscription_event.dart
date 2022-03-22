@@ -31,6 +31,14 @@ class CancellationPeriodChanged extends SubscriptionEvent{
   List<Object?> get props => [cancellationPeriod];
 }
 
+class CostMonthlyChanged extends SubscriptionEvent{
+  const CostMonthlyChanged(this.costs);
+  final num costs;
+
+  @override
+  List<Object?> get props => [costs];
+}
+
 
 class SubscriptionSubmitted extends SubscriptionEvent{
 }

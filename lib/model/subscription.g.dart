@@ -20,19 +20,22 @@ class SubscriptionAdapter extends TypeAdapter<Subscription> {
       name: fields[0] as String,
       date: fields[1] as String,
       cancellationPeriod: fields[2] as num,
+      costs: fields[3] as num,
     );
   }
 
   @override
   void write(BinaryWriter writer, Subscription obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.date)
       ..writeByte(2)
-      ..write(obj.cancellationPeriod);
+      ..write(obj.cancellationPeriod)
+      ..writeByte(3)
+      ..write(obj.costs);
   }
 
   @override
