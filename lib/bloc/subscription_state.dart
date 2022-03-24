@@ -5,16 +5,16 @@ enum SubscriptionStatus {initial,loading,failure,success}
 
 class SubscriptionState extends Equatable {
   const SubscriptionState(
-      {this.name = "", this.result = const[], this.date = "", this.cancellationPeriod =  3, this.status = SubscriptionStatus.initial, this.costs = 0});
+      {this.name = "", this.result = const[], this.date = "", this.cancellationPeriod =  3, this.status = SubscriptionStatus.initial, this.costs = ""});
 
   final String name;
   final String date;
   final SubscriptionStatus status;
   final num cancellationPeriod;
-  final num costs;
+  final String costs;
   final List<Subscription> result;
 
-  SubscriptionState copyWith({String? name,  List<Subscription>? result, String? date, num? cancellationPeriod, SubscriptionStatus? status, num? costs}) {
+  SubscriptionState copyWith({String? name,  List<Subscription>? result, String? date, num? cancellationPeriod, SubscriptionStatus? status, String? costs}) {
     return SubscriptionState(
         name: name ?? this.name,
         result: result ?? this.result,

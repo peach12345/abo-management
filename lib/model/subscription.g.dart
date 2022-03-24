@@ -20,7 +20,7 @@ class SubscriptionAdapter extends TypeAdapter<Subscription> {
       name: fields[0] as String,
       date: fields[1] as String,
       cancellationPeriod: fields[2] as num,
-      costs: fields[3] as num,
+      costs: fields[3] as String,
     );
   }
 

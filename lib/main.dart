@@ -8,14 +8,18 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'notification/notification_service.dart';
 import 'view/AddSubscriptionPage.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<Subscription>(SubscriptionAdapter());
   Box<Subscription> box = await Hive.openBox("subscription");
+
+  WidgetsFlutterBinding.ensureInitialized();
+ // await NotificationService().init();
   runApp(MyApp(
-    subscriptionBloc: new SubscriptionBloc(box),
+    subscriptionBloc: SubscriptionBloc(box),
   ));
 }
 

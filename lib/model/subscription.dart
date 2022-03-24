@@ -14,7 +14,7 @@ class Subscription extends HiveObject {
   late num cancellationPeriod;
 
   @HiveField(3)
-  late num costs;
+  late String costs;
 
 
 

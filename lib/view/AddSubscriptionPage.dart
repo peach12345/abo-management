@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../bloc/subscription_bloc.dart';
 
@@ -87,13 +88,13 @@ class AddSubscriptionView extends StatelessWidget {
                       child: TextFormField(
                           keyboardType: TextInputType.number,
                           inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
+                            FilteringTextInputFormatter.digitsOnly,
+                            CurrencyInputFormatter()
                           ],
                           initialValue: state.cancellationPeriod.toString(),
                           onChanged: (costs) => context
                               .read<SubscriptionBloc>()
-                              .add(CostMonthlyChanged(
-                              costs.isEmpty ? 0 : num.parse(costs))),
+                              .add(CostMonthlyChanged(costs)),
                           decoration: const InputDecoration(
                               hintText: "Costs monthly",
                               labelText: "Costs monthly")),
@@ -127,5 +128,26 @@ class AddSubscriptionView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+
+class CurrencyInputFormatter extends TextInputFormatter {
+
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+
+    if(newValue.selection.baseOffset == 0){
+      return newValue;
+    }
+
+    double value = double.parse(newValue.text);
+
+    final formatter = NumberFormat.simpleCurrency(name: 'EUR', decimalDigits: 2);
+
+    String newText = formatter.format(value/100);
+
+    return newValue.copyWith(
+        text: newText,
+        selection: new TextSelection.collapsed(offset: newText.length));
   }
 }

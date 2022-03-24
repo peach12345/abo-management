@@ -47,7 +47,7 @@ class Table extends StatelessWidget {
                           DataCell(Text(element.name)),
                           DataCell(Text(element.date)),
                           DataCell(Text(element.cancellationPeriod.toString())),
-                          DataCell(Text(element.costs.toString() + " €")),
+                          DataCell(Text(element.costs.toString())),
                           DataCell(const Icon(Icons.delete),
                               onTap: () => {
                                     showDialog<String>(

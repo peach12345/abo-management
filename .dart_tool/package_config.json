@@ -194,6 +194,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_local_notifications",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-5.0.0+4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_local_notifications_platform_interface",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_platform_interface-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///C:/Users/danie/Flutter/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -482,6 +494,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "timezone",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/timezone-0.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "timing",
       "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/timing-1.0.0",
       "packageUri": "lib/",
@@ -536,7 +554,7 @@
       "languageVersion": "2.15"
     }
   ],
-  "generated": "2022-03-21T17:45:57.899667Z",
+  "generated": "2022-03-22T15:58:42.256806Z",
   "generator": "pub",
   "generatorVersion": "2.16.1"
 }
