@@ -2,14 +2,12 @@ import 'package:androidapp/bloc/subscription_bloc.dart';
 import 'package:androidapp/model/subscription.dart';
 import 'package:androidapp/view/SubscriptionTablePage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 
-import 'notification/notification_service.dart';
-import 'view/AddSubscriptionPage.dart';
+import 'notification/notifications_helper.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
@@ -17,15 +15,20 @@ Future<void> main() async {
   Box<Subscription> box = await Hive.openBox("subscription");
 
   WidgetsFlutterBinding.ensureInitialized();
- // await NotificationService().init();
+
+  NotificationAppLaunchDetails notifLaunch;
+  final FlutterLocalNotificationsPlugin notifsPlugin =
+      FlutterLocalNotificationsPlugin();
+  notifLaunch = (await notifsPlugin.getNotificationAppLaunchDetails())!;
+  await initNotifications(notifsPlugin);
+
   runApp(MyApp(
-    subscriptionBloc: SubscriptionBloc(box),
+    subscriptionBloc: SubscriptionBloc(box,notifsPlugin),
   ));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required this.subscriptionBloc}) : super(key: key);
-
 
   final SubscriptionBloc subscriptionBloc;
 
@@ -40,13 +43,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
-        create: (context) =>  subscriptionBloc,
+        create: (context) => subscriptionBloc,
         child: const SubscriptionView(),
       ),
     );
   }
 }
-
-
-
-

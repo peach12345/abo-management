@@ -2,17 +2,20 @@ import 'dart:async';
 
 import 'package:androidapp/model/subscription.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+
+import '../notification/notifications_helper.dart';
 
 part 'subscription_event.dart';
 
 part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
-  SubscriptionBloc(this.box) : super( const SubscriptionState()) {
+  SubscriptionBloc(this.box,this.notifsPlugin) : super( const SubscriptionState()) {
     on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
     on<NameChanged>(_onNameChanged);
     on<DateChanged>(_onDateChanged);
@@ -24,6 +27,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   }
 
   final Box<Subscription> box;
+  final FlutterLocalNotificationsPlugin notifsPlugin;
 
   Future<void> _onNameChanged(
       NameChanged event, Emitter<SubscriptionState> emit) async {
@@ -37,6 +41,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
   Future<void> _onSubscriptionSubmitted(
       SubscriptionSubmitted event, Emitter<SubscriptionState> emit) async {
+    scheduleNotification(
+        notifsPlugin: notifsPlugin, //Or whatever you've named it in main.dart
+        id: DateTime.now().toString(),
+        body: "A scheduled Notification",
+        scheduledTime: DateTime.now(), title: 'Test');
+
     try {
       emit(state.copyWith(
           status: SubscriptionStatus.loading));

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../bloc/subscription_bloc.dart';
+import '../notification/notifications_helper.dart';
 
 class AddSubscriptionView extends StatelessWidget {
   AddSubscriptionView({Key? key}) : super(key: key);
@@ -113,7 +114,7 @@ class AddSubscriptionView extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: FloatingActionButton(
                             onPressed: () => {
-                                  context
+                            context
                                       .read<SubscriptionBloc>()
                                       .add(SubscriptionSubmitted())
                                 },
