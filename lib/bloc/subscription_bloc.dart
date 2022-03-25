@@ -41,14 +41,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
   Future<void> _onSubscriptionSubmitted(
       SubscriptionSubmitted event, Emitter<SubscriptionState> emit) async {
-    DateTime test =  DateTime.parse(state.date);
-    var testOne = test.subtract(Duration(days: state.cancellationPeriod.toInt()));
-    scheduleNotification(
-        notifsPlugin: notifsPlugin, //Or whatever you've named it in main.dart
-        id: testOne.toString(),
-        body: "Reminder for" + state.name,
-        scheduledTime: testOne, title: state.name);
-
     try {
       emit(state.copyWith(
           status: SubscriptionStatus.loading));
@@ -74,10 +66,22 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       box.put(sub.name, sub);
       emit(state.copyWith(
           result: newResult, status: SubscriptionStatus.success));
+      _createNotification();
     } catch(e) {
+
       emit(state.copyWith(
           status: SubscriptionStatus.failure));
     }
+  }
+
+  void _createNotification() {
+    DateTime test =  DateTime.parse(state.date);
+    var testOne = test.subtract(Duration(days: state.cancellationPeriod.toInt()));
+    scheduleNotification(
+        notifsPlugin: notifsPlugin, //Or whatever you've named it in main.dart
+        id: testOne.toString(),
+        body: "Reminder for" + state.name,
+        scheduledTime: testOne, title: state.name);
   }
 
   Future<void> _onCancellationPeriodChanged(
