@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/subscription_bloc.dart';
-import 'AddSubscriptionPage.dart';
+import 'add_subscription_page.dart';
 
 class Table extends StatelessWidget {
   const Table({Key? key}) : super(key: key);

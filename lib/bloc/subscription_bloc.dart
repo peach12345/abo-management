@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:androidapp/model/subscription.dart';
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
-import 'package:equatable/equatable.dart';
 
 import '../notification/notifications_helper.dart';
 
@@ -15,7 +15,8 @@ part 'subscription_event.dart';
 part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
-  SubscriptionBloc(this.box,this.notifsPlugin) : super( const SubscriptionState()) {
+  SubscriptionBloc(this.box, this.notifsPlugin)
+      : super(const SubscriptionState()) {
     on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
     on<NameChanged>(_onNameChanged);
     on<DateChanged>(_onDateChanged);
@@ -42,46 +43,50 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   Future<void> _onSubscriptionSubmitted(
       SubscriptionSubmitted event, Emitter<SubscriptionState> emit) async {
     try {
-      emit(state.copyWith(
-          status: SubscriptionStatus.loading));
+      emit(state.copyWith(status: SubscriptionStatus.loading));
       var outputFormat = DateFormat('dd.MM.yyyy');
-
       if (state.date.isEmpty) {
         var outputDate = outputFormat.format(DateTime.now());
         emit(state.copyWith(date: outputDate));
       }
-      final sub = Subscription(
-          name: state.name,
-          costs: state.costs,
-          date: outputFormat.format(DateTime.parse(state.date)),
-          cancellationPeriod: state.cancellationPeriod);
-      List<Subscription> newResult = [];
-      newResult.addAll(state.result);
-      if (box.get(sub.name) != null) {
-        box.delete(sub.name);
-        newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
-      }
-      emit(state.copyWith(status: SubscriptionStatus.loading));
-      newResult.add(sub);
-      box.put(sub.name, sub);
+      List<Subscription> newResult = _addSubscription(outputFormat, emit);
       emit(state.copyWith(
           result: newResult, status: SubscriptionStatus.success));
       _createNotification();
-    } catch(e) {
-
-      emit(state.copyWith(
-          status: SubscriptionStatus.failure));
+    } catch (e) {
+      emit(state.copyWith(status: SubscriptionStatus.failure));
     }
   }
 
+  List<Subscription> _addSubscription(DateFormat outputFormat, Emitter<SubscriptionState> emit) {
+    final sub = Subscription(
+        name: state.name,
+        costs: state.costs,
+        date: outputFormat.format(DateTime.parse(state.date)),
+        cancellationPeriod: state.cancellationPeriod);
+    List<Subscription> newResult = [];
+    newResult.addAll(state.result);
+    if (box.get(sub.name) != null) {
+      box.delete(sub.name);
+      newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
+    }
+    emit(state.copyWith(status: SubscriptionStatus.loading));
+    newResult.add(sub);
+    box.put(sub.name, sub);
+    return newResult;
+  }
+
   void _createNotification() {
-    DateTime test =  DateTime.parse(state.date);
-    var testOne = test.subtract(Duration(days: state.cancellationPeriod.toInt()));
+    DateTime test = DateTime.parse(state.date);
+    var testOne =
+        test.subtract(Duration(days: state.cancellationPeriod.toInt()));
     scheduleNotification(
-        notifsPlugin: notifsPlugin, //Or whatever you've named it in main.dart
+        notifsPlugin: notifsPlugin,
+        //Or whatever you've named it in main.dart
         id: testOne.toString(),
         body: "Reminder for" + state.name,
-        scheduledTime: testOne, title: state.name);
+        scheduledTime: testOne,
+        title: state.name);
   }
 
   Future<void> _onCancellationPeriodChanged(
@@ -94,7 +99,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     newResult = box.values
         .map(
           (e) => Subscription(
-            costs: e.costs,
+              costs: e.costs,
               name: e.name,
               date: e.date,
               cancellationPeriod: e.cancellationPeriod),
@@ -108,7 +113,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(state.copyWith(status: SubscriptionStatus.initial));
   }
 
-  FutureOr<void> _onDeleteSubscription(DeleteSubscription event, Emitter<SubscriptionState> emit) {
+  FutureOr<void> _onDeleteSubscription(
+      DeleteSubscription event, Emitter<SubscriptionState> emit) {
     List<Subscription> newResult = [];
     newResult.addAll(state.result);
     if (box.get(event.name) != null) {
@@ -118,8 +124,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(state.copyWith(result: newResult));
   }
 
-  FutureOr<void> _onCostMonthlyChanged(CostMonthlyChanged event, Emitter<SubscriptionState> emit
-      ) {
+  FutureOr<void> _onCostMonthlyChanged(
+      CostMonthlyChanged event, Emitter<SubscriptionState> emit) {
     emit(state.copyWith(costs: event.costs));
   }
 }
