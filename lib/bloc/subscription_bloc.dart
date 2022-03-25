@@ -41,11 +41,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
   Future<void> _onSubscriptionSubmitted(
       SubscriptionSubmitted event, Emitter<SubscriptionState> emit) async {
+    DateTime test =  DateTime.parse(state.date);
+    var testOne = test.subtract(Duration(days: state.cancellationPeriod.toInt()));
     scheduleNotification(
         notifsPlugin: notifsPlugin, //Or whatever you've named it in main.dart
-        id: DateTime.now().toString(),
-        body: "A scheduled Notification",
-        scheduledTime: DateTime.now(), title: 'Test');
+        id: testOne.toString(),
+        body: "Reminder for" + state.name,
+        scheduledTime: testOne, title: state.name);
 
     try {
       emit(state.copyWith(
