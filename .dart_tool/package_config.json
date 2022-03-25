@@ -3,13 +3,13 @@
   "packages": [
     {
       "name": "_fe_analyzer_shared",
-      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-36.0.0",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-38.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "analyzer",
-      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-3.3.1",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-3.4.1",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -146,6 +146,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "dbus",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/dbus-0.7.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.15"
+    },
+    {
       "name": "equatable",
       "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/equatable-2.0.3",
       "packageUri": "lib/",
@@ -195,13 +201,19 @@
     },
     {
       "name": "flutter_local_notifications",
-      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-5.0.0+4",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-9.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_local_notifications_linux",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_linux-0.4.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "flutter_local_notifications_platform_interface",
-      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_platform_interface-3.0.0",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_platform_interface-5.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -380,6 +392,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "petitparser",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-4.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "platform",
       "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/platform-3.1.0",
       "packageUri": "lib/",
@@ -501,7 +519,7 @@
     },
     {
       "name": "timezone",
-      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/timezone-0.7.0",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/timezone-0.8.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -537,7 +555,7 @@
     },
     {
       "name": "win32",
-      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/win32-2.4.2",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/win32-2.4.4",
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
@@ -546,6 +564,12 @@
       "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/xdg_directories-0.2.0+1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "xml",
+      "rootUri": "file:///C:/Users/danie/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/xml-5.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
     },
     {
       "name": "yaml",
@@ -560,7 +584,7 @@
       "languageVersion": "2.15"
     }
   ],
-  "generated": "2022-03-24T16:37:02.107980Z",
+  "generated": "2022-03-25T17:06:35.847092Z",
   "generator": "pub",
   "generatorVersion": "2.16.1"
 }
