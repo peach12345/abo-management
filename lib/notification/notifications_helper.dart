@@ -11,7 +11,7 @@ Future<void> initNotifications(
     notifs.FlutterLocalNotificationsPlugin
     notifsPlugin) async {
   var initializationSettingsAndroid =
-  notifs.AndroidInitializationSettings('icon');
+  const notifs.AndroidInitializationSettings('icon');
   var initializationSettingsIOS = notifs.IOSInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
