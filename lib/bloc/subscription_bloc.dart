@@ -78,15 +78,15 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
   void _createNotification() {
     DateTime test = DateTime.parse(state.date);
-    var testOne =
+    var timeToSchedule =
         test.subtract(Duration(days: state.cancellationPeriod.toInt()));
     scheduleNotification(
         notifsPlugin: notifsPlugin,
         //Or whatever you've named it in main.dart
-        id: testOne.toString(),
-        body: "Reminder for" + state.name,
-        scheduledTime: testOne,
-        title: state.name);
+        id: timeToSchedule.toString(),
+        body: "Reminder to cancel you subscription for: " + state.name,
+        scheduledTime: timeToSchedule,
+        title: "Reminder");
   }
 
   Future<void> _onCancellationPeriodChanged(

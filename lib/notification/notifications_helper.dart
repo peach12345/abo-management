@@ -42,11 +42,15 @@ Future<void> scheduleNotification(
       required DateTime scheduledTime}) async {
   var androidSpecifics = notifs.AndroidNotificationDetails(
     id, // This specifies the ID of the Notification
-    'Scheduled notification', // This specifies the name of the notification channel
+    'Scheduled notification',
+    icon: '@mipmap/notificationwhite',
+    channelDescription: "My notification",
+    largeIcon: const notifs.DrawableResourceAndroidBitmap('@mipmap/notification')
+    // This specifies the name of the notification channel
   );
   var platformChannelSpecifics = notifs.NotificationDetails(
       android: androidSpecifics,iOS: null);
-  await notifsPlugin.schedule(0, title, "Reminder",
+  await notifsPlugin.schedule(0, title, body,
       scheduledTime, platformChannelSpecifics); // This literally schedules the notification
 }
 
