@@ -1,3 +1,4 @@
+import 'package:androidapp/view/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -93,22 +94,13 @@ class Table extends StatelessWidget {
 class SubscriptionView extends StatelessWidget {
   const SubscriptionView({Key? key}) : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
+    int _selectedIndex = 0;
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              label: 'Add',
-            ),
-          ],
-          selectedItemColor: Colors.amber[800],
-        ),
+        bottomNavigationBar: Navigation(),
       appBar: AppBar(
         title: const Text("Subscriptions"),
         actions: [
