@@ -15,7 +15,7 @@ part 'subscription_event.dart';
 part 'subscription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
-  SubscriptionBloc(this.box, this.notifsPlugin)
+  SubscriptionBloc(this.homeBox, this.notifsPlugin, this.bankBox, this.carBox)
       : super(const SubscriptionState()) {
     on<SubscriptionSubmitted>(_onSubscriptionSubmitted);
     on<NameChanged>(_onNameChanged);
@@ -27,7 +27,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     init();
   }
 
-  final Box<Subscription> box;
+  final Box<Subscription> homeBox;
+  final Box<Subscription> bankBox;
+  final Box<Subscription> carBox;
+
   final FlutterLocalNotificationsPlugin notifsPlugin;
 
   Future<void> _onNameChanged(
@@ -51,7 +54,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       }
       List<Subscription> newResult = _addSubscription(outputFormat, emit);
       emit(state.copyWith(
-          result: newResult, status: SubscriptionStatus.success));
+          homeSubscriptionList: newResult, status: SubscriptionStatus.success));
       _createNotification();
     } catch (e) {
       emit(state.copyWith(status: SubscriptionStatus.failure));
@@ -65,14 +68,14 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         date: outputFormat.format(DateTime.parse(state.date)),
         cancellationPeriod: state.cancellationPeriod);
     List<Subscription> newResult = [];
-    newResult.addAll(state.result);
-    if (box.get(sub.name) != null) {
-      box.delete(sub.name);
+    newResult.addAll(state.homeSubscriptionList);
+    if (homeBox.get(sub.name) != null) {
+      homeBox.delete(sub.name);
       newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
     }
     emit(state.copyWith(status: SubscriptionStatus.loading));
     newResult.add(sub);
-    box.put(sub.name, sub);
+    homeBox.put(sub.name, sub);
     return newResult;
   }
 
@@ -96,7 +99,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
   void init() {
     List<Subscription> newResult = [];
-    newResult = box.values
+    newResult = homeBox.values
         .map(
           (e) => Subscription(
               costs: e.costs,
@@ -105,7 +108,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
               cancellationPeriod: e.cancellationPeriod),
         )
         .toList();
-    emit(state.copyWith(result: newResult));
+    emit(state.copyWith(homeSubscriptionList: newResult));
   }
 
   Future<void> _onSubscriptionInitial(
@@ -116,12 +119,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   FutureOr<void> _onDeleteSubscription(
       DeleteSubscription event, Emitter<SubscriptionState> emit) {
     List<Subscription> newResult = [];
-    newResult.addAll(state.result);
-    if (box.get(event.name) != null) {
-      box.delete(event.name);
+    newResult.addAll(state.homeSubscriptionList);
+    if (homeBox.get(event.name) != null) {
+      homeBox.delete(event.name);
       newResult.remove(newResult.firstWhere((e) => e.name == event.name));
     }
-    emit(state.copyWith(result: newResult));
+    emit(state.copyWith(homeSubscriptionList: newResult));
   }
 
   FutureOr<void> _onCostMonthlyChanged(

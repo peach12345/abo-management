@@ -11,6 +11,8 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<Subscription>(SubscriptionAdapter());
   Box<Subscription> box = await Hive.openBox("subscription");
+  Box<Subscription> bankBox = await Hive.openBox("bank");
+  Box<Subscription> carBox = await Hive.openBox("car");
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -21,7 +23,7 @@ Future<void> main() async {
   await initNotifications(notifsPlugin);
 
   runApp(MyApp(
-    subscriptionBloc: SubscriptionBloc(box, notifsPlugin),
+    subscriptionBloc: SubscriptionBloc(box,notifsPlugin,bankBox,carBox),
   ));
 }
 

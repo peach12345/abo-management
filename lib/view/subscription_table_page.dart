@@ -1,4 +1,4 @@
-import 'package:androidapp/view/routes.dart';
+import 'package:androidapp/view/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,7 +12,7 @@ class Table extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SubscriptionBloc, SubscriptionState>(
         buildWhen: (previousState, state) {
-      return previousState.result.length != state.result.length;
+      return previousState.homeSubscriptionList.length != state.homeSubscriptionList.length;
       // return true/false to determine whether or not
       // to rebuild the widget with state
     }, builder: (context, state) {
@@ -41,7 +41,7 @@ class Table extends StatelessWidget {
               DataColumn(label: Text('Delete'))
             ],
             rows: state
-                .result // Loops through dataColumnText, each iteration assigning the value to element
+                .homeSubscriptionList // Loops through dataColumnText, each iteration assigning the value to element
                 .map(
                   ((element) => DataRow(
                         cells: <DataCell>[
