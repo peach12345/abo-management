@@ -15,6 +15,15 @@ class NameChanged extends SubscriptionEvent{
   List<Object?> get props => [name];
 }
 
+class SeletedSubscriptionListChanged extends SubscriptionEvent{
+  const SeletedSubscriptionListChanged(this.selectedList);
+  final String selectedList;
+
+  @override
+  List<Object?> get props => [selectedList];
+
+}
+
 class DateChanged extends SubscriptionEvent{
   const DateChanged(this.date);
   final String date;

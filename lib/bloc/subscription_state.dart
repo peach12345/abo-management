@@ -12,6 +12,7 @@ class SubscriptionState extends Equatable {
       this.status = SubscriptionStatus.initial,
       this.costs = "",
       this.bankSubscriptionList = const [],
+        this.selectedSubscriptionList = "Home",
       this.carSubscriptionList = const []});
 
   final String name;
@@ -19,6 +20,7 @@ class SubscriptionState extends Equatable {
   final SubscriptionStatus status;
   final num cancellationPeriod;
   final String costs;
+  final String selectedSubscriptionList;
   final List<Subscription> homeSubscriptionList;
 
   final List<Subscription> bankSubscriptionList;
@@ -31,6 +33,7 @@ class SubscriptionState extends Equatable {
       List<Subscription>? carSubscriptionList,
       String? date,
       num? cancellationPeriod,
+        String? selectedSubscriptionList,
       SubscriptionStatus? status,
       String? costs}) {
     return SubscriptionState(
@@ -39,6 +42,7 @@ class SubscriptionState extends Equatable {
         date: date ?? this.date,
         cancellationPeriod: cancellationPeriod ?? this.cancellationPeriod,
         status: status ?? this.status,
+        selectedSubscriptionList: selectedSubscriptionList ?? this.selectedSubscriptionList,
         carSubscriptionList: carSubscriptionList ?? this.carSubscriptionList,
         bankSubscriptionList: bankSubscriptionList ?? this.bankSubscriptionList,
         costs: costs ?? this.costs);
@@ -50,6 +54,7 @@ class SubscriptionState extends Equatable {
         homeSubscriptionList,
         bankSubscriptionList,
         carSubscriptionList,
+    selectedSubscriptionList,
         date,
         cancellationPeriod,
         status,

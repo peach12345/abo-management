@@ -106,6 +106,29 @@ class AddSubscriptionView extends StatelessWidget {
                         child: const Icon(Icons.calendar_today_outlined),
                       ),
                     ),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: DropdownButton<String>(
+                    value: state.selectedSubscriptionList,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: (String? newValue) {
+                        context.read<SubscriptionBloc>().add(SeletedSubscriptionListChanged(newValue!));
+                    },
+                    items: <String>['Home', 'Car', 'Bank']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
                     const Divider(),
                     Padding(
                       padding: const EdgeInsets.all(20.0),

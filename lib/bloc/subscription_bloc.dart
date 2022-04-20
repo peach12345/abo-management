@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:androidapp/model/subscription.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionInitial>(_onSubscriptionInitial);
     on<DeleteSubscription>(_onDeleteSubscription);
     on<CostMonthlyChanged>(_onCostMonthlyChanged);
+    on<SeletedSubscriptionListChanged>(_onSeletedSubscriptionListChanged);
     init();
   }
 
@@ -69,15 +71,28 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         cancellationPeriod: state.cancellationPeriod);
     List<Subscription> newResult = [];
     newResult.addAll(state.homeSubscriptionList);
-    if (homeBox.get(sub.name) != null) {
-      homeBox.delete(sub.name);
-      newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
-    }
+
+    _cleanLists( sub,newResult);
+
+
     emit(state.copyWith(status: SubscriptionStatus.loading));
-    newResult.add(sub);
-    homeBox.put(sub.name, sub);
+    _putBox(newResult, sub);
     return newResult;
   }
+
+  void _putBox(List<Subscription> newResult, Subscription sub) {
+    newResult.add(sub);
+
+    if(state.selectedSubscriptionList == "Home") {
+      homeBox.put(sub.name, sub);
+    } else  if(state.selectedSubscriptionList == "Car") {
+      carBox.put(sub.name, sub);
+    } else  if(state.selectedSubscriptionList == "Bank") {
+      bankBox.put(sub.name, sub);
+    }
+  }
+
+
 
   void _createNotification() {
     DateTime test = DateTime.parse(state.date);
@@ -130,5 +145,22 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   FutureOr<void> _onCostMonthlyChanged(
       CostMonthlyChanged event, Emitter<SubscriptionState> emit) {
     emit(state.copyWith(costs: event.costs));
+  }
+
+  FutureOr<void> _onSeletedSubscriptionListChanged(SeletedSubscriptionListChanged event, Emitter<SubscriptionState> emit) {
+    emit(state.copyWith(selectedSubscriptionList: event.selectedList));
+  }
+
+  void _cleanLists(Subscription sub,  List<Subscription> newResult) {
+    if (state.selectedSubscriptionList =="Home" && homeBox.get(sub.name) != null) {
+      homeBox.delete(sub.name);
+      newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
+    } else  if (state.selectedSubscriptionList =="Bank" && bankBox.get(sub.name) != null) {
+      bankBox.delete(sub.name);
+      newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
+    } else  if (state.selectedSubscriptionList =="Car" && carBox.get(sub.name) != null) {
+      carBox.delete(sub.name);
+      newResult.remove(newResult.firstWhere((e) => e.name == sub.name));
+    }
   }
 }
